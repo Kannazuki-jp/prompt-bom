@@ -1,64 +1,72 @@
+[日本語版 (Japanese version)](./README.md)
+
 # prompt-bom
 
-<!-- ロゴ（後で docs/img/logo.png に差し替え） -->
+<!-- Logo (Replace with actual logo in docs/img/logo.png later) -->
 ![prompt-bom logo](https://via.placeholder.com/300x100.png?text=prompt-bom)
 
-<!-- バッジ（後で実際のCIやバージョンに合わせて更新） -->
+<!-- Badges (Update with actual CI status and version later) -->
 [![Go Version](https://img.shields.io/badge/go-1.22+-blue.svg)](https://golang.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 <!-- [![Build Status](https://img.shields.io/github/actions/workflow/status/<your-org>/prompt-bom/go.yml?branch=main)](https://github.com/<your-org>/prompt-bom/actions) -->
 
-プロンプト管理のためのBOM（部品表）CLIツール。
+A Bill of Materials (BOM) CLI tool for managing prompts.
 
-生成AIプロンプトの複雑化に対応し、BOM/SBOMの知見を応用したプロンプト管理基盤を提供します。
-YAML形式のBOM定義とGo製CLIツールで最小限の管理機能をOSSとして実装し、
-`init`/`validate`/`build`等のCLIコマンドを備え、拡張性・ガバナンス・監査要件にも対応します。
+This tool provides a prompt management foundation based on BOM/SBOM concepts, addressing the increasing complexity of generative AI prompts. It implements minimal management features using YAML-based BOM definitions and a Go-based CLI tool, supporting commands like `init`/`validate`/`build`, and considering future scalability, governance, and audit requirements.
 
-## 特徴
+## Features
 
-- **部品としてのプロンプト管理**: プロンプトを部品（コンポーネント）として定義・管理
-- **YAMLによる宣言的定義**: `prompt.bom.yaml` でBOM構造を宣言的に記述
-- **シンプルなCLI**: `init`, `validate`, `build` の基本コマンドで簡単操作
-- **拡張性**: 将来的な外部ツール連携（Dify, LangChain等）を考慮した設計
+- **Manage Prompts as Components**: Define and manage prompts as individual components.
+- **Declarative Definition with YAML**: Describe the BOM structure declaratively in `prompt.bom.yaml`.
+- **Simple CLI**: Easy operation with basic commands: `init`, `validate`, `build`.
+- **Extensibility**: Designed with future integration with external tools (Dify, LangChain, etc.) in mind.
 
-## 目次
+## Table of Contents
 
-- [インストール](#インストール)
-- [Quick Start (60秒体験)](#quick-start-60秒体験)
-- [コマンド一覧](#コマンド一覧)
-- [アーキテクチャ概要](#アーキテクチャ概要)
-- [ライセンス](#ライセンス)
-- [ロードマップ](#ロードマップ)
+- [Installation](#installation)
+- [Quick Start (60-second demo)](#quick-start-60-second-demo)
+- [Command List](#command-list)
+- [Architecture Overview](#architecture-overview)
+- [License](#license)
+- [Roadmap](#roadmap)
 
-## インストール
+## Installation
 
 ### Go
 
 ```bash
 go install github.com/kannazuki/prompt-bom/cmd/bom@latest
 ```
-*(注意: モジュールパスは今後変更される可能性があります)*
+*(Note: The module path may change in the future)*
 
+### Homebrew (Planned)
 
-## Quick Start 
+Installation via Homebrew Tap is planned for the future.
 
-1.  **BOMテンプレート生成:**
+```bash
+# brew tap <your-org>/tap
+# brew install prompt-bom
+```
+
+## Quick Start (60-second demo)
+
+1.  **Generate BOM Template:**
 
     ```bash
     bom init
-    # -> prompt.bom.yaml を生成しました。
+    # -> prompt.bom.yaml を生成しました。 (Generated prompt.bom.yaml.)
     ```
 
-2.  **サンプルコンポーネント作成:**
+2.  **Create Sample Components:**
 
     ```bash
     mkdir -p examples/components
-    echo "これは部品Aです。" > examples/components/partA.md
-    echo "これは部品Bです。" > examples/components/partB.md
+    echo "This is part A." > examples/components/partA.md
+    echo "This is part B." > examples/components/partB.md
     ```
 
-3.  **`prompt.bom.yaml` を編集:**
-    `components:` セクションに以下を追加します。
+3.  **Edit `prompt.bom.yaml`:**
+    Add the following to the `components:` section:
 
     ```yaml
     components:
@@ -75,80 +83,82 @@ go install github.com/kannazuki/prompt-bom/cmd/bom@latest
         metadata:
           owner: "your-team"
     ```
-    *(注意: `hash` はダミー値です。将来的に自動生成・検証機能が追加されます)*
+    *(Note: `hash` is a dummy value. Auto-generation/validation will be added later)*
 
-4.  **BOM検証:**
+4.  **Validate BOM:**
 
     ```bash
     bom validate prompt.bom.yaml
-    # -> OK: スキーマと必須フィールド検証に合格
+    # -> OK: スキーマと必須フィールド検証に合格 (OK: Schema and required fields validation passed)
     ```
 
-5.  **プロンプト結合:**
+5.  **Build Prompt:**
 
     ```bash
     bom build prompt.bom.yaml
-    # 標準出力に以下が表示される:
-    # これは部品Aです。
+    # The following will be printed to standard output:
+    # This is part A.
     #
-    # これは部品Bです。
+    # This is part B.
     #
     ```
 
-    ファイルに出力する場合:
+    To output to a file:
 
     ```bash
-    bom build prompt.bom.yaml -o final.prompt.txt
-    # -> final.prompt.txt に結合結果を出力しました。
+    bom build prompt.bom.yaml -o final_prompt.md
+    # -> final_prompt.md に結合結果を出力しました。 (Output combined result to final_prompt.md.)
     ```
 
-## コマンド一覧
+## Command List
 
-| コマンド         | 説明                                    |
-| ---------------- | --------------------------------------- |
-| `bom init`       | BOMテンプレートYAML (`prompt.bom.yaml`) を生成 |
-| `bom validate`   | BOM YAMLのスキーマ・必須フィールドを検証  |
-| `bom build`      | BOMに基づきコンポーネントを結合して出力   |
+| Command          | Description                                      |
+| ---------------- | ------------------------------------------------ |
+| `bom init`       | Generate a BOM template YAML (`prompt.bom.yaml`) |
+| `bom validate`   | Validate BOM YAML schema and required fields   |
+| `bom build`      | Build and output prompts based on the BOM        |
 
-詳細は [`docs/usage.md`](docs/usage.md) を参照してください。
+Refer to `docs/usage.md` (To be created) for details.
 
-## アーキテクチャ概要
+## Architecture Overview
 
 ```plaintext
 prompt-bom/
-├── cmd/bom/          # CLIエントリーポイントとコマンド実装
+├── cmd/bom/          # CLI entrypoint and command implementations
 │   ├── main.go
 │   ├── init.go
 │   ├── validate.go
 │   └── build.go
 ├── internal/
-│   ├── domain/       # BOM/Component等のコア構造体、ビジネスロジック
+│   ├── domain/       # Core structs (BOM/Component), business logic
 │   │   └── bom.go
-│   ├── app/          # (予定) アプリケーション層
-│   └── infra/        # (予定) ファイルI/O, 外部連携等
-├── spec/             # 仕様ファイル
-│   └── prompt.bom.schema.json # BOM YAMLのJSON Schema
-├── examples/         # 利用例
-│   └── components/   # サンプルコンポーネントファイル (*.md)
-├── docs/             # ドキュメント
+│   ├── app/          # (Planned) Application layer
+│   └── infra/        # (Planned) File I/O, external integrations, etc.
+├── spec/             # Specification files
+│   └── prompt.bom.schema.json # JSON Schema for BOM YAML
+├── examples/         # Usage examples
+│   └── components/   # Sample component files (*.md)
+├── docs/             # Documentation
 │   ├── testing.md
-│   └── img/          # (ロゴ画像)
+│   └── img/          # (Logo image)
+├── LICENSE           # Apache License 2.0 text
 ├── go.mod
 ├── go.sum
-└── README.md
+└── README.ja.md      # Japanese README
+└── README.md         # English README (This file)
 ```
 
-## ライセンス
+## License
 
-[MIT License](https://opensource.org/licenses/MIT)
+Licensed under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0).
 
-## ロードマップ
+## Roadmap
 
-MVP完了後、以下の機能拡張を計画しています。
+After completing the MVP, the following feature enhancements are planned:
 
-- Dify連携 
-- LangChain連携 
-- 回帰テスト自動化 
-- 階層化 
+- Dify Integration 
+- LangChain Integration 
+- Automated Regression Testing 
+- Hierarchical BOMs
 
-
+Refer to `document/Prompt-bom-overview.md` for details. 
