@@ -138,10 +138,6 @@ prompt-bom/
 └── README.md
 ```
 
-## ライセンス
-
-[MIT License](https://opensource.org/licenses/MIT)
-
 ## ロードマップ
 
 MVP完了後、以下の機能拡張を計画しています。
