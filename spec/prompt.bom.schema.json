@@ -1,0 +1,47 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "prompt.bom schema v1.0.0",
+  "type": "object",
+  "properties": {
+    "schema_version": { "type": "string", "const": "1.0.0" },
+    "bom": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+        "model": { "type": "string" },
+        "description": { "type": "string" },
+        "metadata": {
+          "type": "object",
+          "properties": {
+            "owner": { "type": "string" },
+            "license": { "type": "string" }
+          },
+          "required": ["owner", "license"]
+        }
+      },
+      "required": ["name", "version", "model", "description", "metadata"]
+    },
+    "components": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+          "hash": { "type": "string", "pattern": "^sha256:[0-9a-fA-F]{64}$" },
+          "description": { "type": "string" },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "owner": { "type": "string" }
+            },
+            "required": ["owner"]
+          }
+        },
+        "required": ["id", "version", "hash", "description", "metadata"]
+      }
+    }
+  },
+  "required": ["schema_version", "bom", "components"]
+} 

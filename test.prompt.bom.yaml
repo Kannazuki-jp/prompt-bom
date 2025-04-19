@@ -1,0 +1,28 @@
+schema_version: "1.0.0"
+bom:
+  name: "my-bom"
+  version: "0.1.0"
+  model: "gpt-4o-2025-05"
+  description: "BOM description"
+  metadata:
+    owner: "your-team"
+    license: "MIT"
+components:
+  - id: "A"
+    version: "1.0.0"
+    hash: "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    description: "Aのプロンプト"
+    metadata:
+      owner: "your-team"
+  - id: "B"
+    version: "1.0.0"
+    hash: "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    description: "Bのプロンプト"
+    metadata:
+      owner: "your-team"
+  - id: "C"
+    version: "1.0.0"
+    hash: "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    description: "Cのプロンプト"
+    metadata:
+      owner: "your-team"
